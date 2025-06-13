@@ -38,6 +38,8 @@ gemini_model = genai.GenerativeModel('gemini-2.0-flash-lite') if GEMINI_API_KEY 
 # これがWebアプリの本体になるイメージね！
 app = FastAPI()
 
+print("DEBUG: Before adding CORS middleware") # ★★★ 追加 ★★★
+
 # CORS設定を追加するよ
 # 許可するオリジン（フロントエンドのURL）を指定するよ
 origins = [
@@ -56,7 +58,7 @@ app.add_middleware(
     allow_headers=["*"], # 全てのHTTPヘッダーを許可
 )
 
-
+print("DEBUG: After adding CORS middleware") # ★★★ 追加 ★★★
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
 
