@@ -44,7 +44,7 @@ print("DEBUG: Before adding CORS middleware") # ★★★ 追加 ★★★
 # 許可するオリジン（フロントエンドのURL）を指定するよ
 origins = [
     "http://localhost:3000", # 君のフロントエンドが動いているURLだよ！
-    "https://supabase-gemini-auth-app.vercel.app/", # ★ VercelにデプロイしたあなたのフロントエンドURL
+    "https://supabase-gemini-auth-app.vercel.app", # ★ VercelにデプロイしたあなたのフロントエンドURL
     "https://supabase-gemini-auth-app.onrender.com" # ★ 自身のAPIも許可 (一部のリダイレクトなどで必要になる場合がある)
     # "http://localhost", # もし必要なら追加
     # "http://localhost:8080", # 他のポートもあれば追加
