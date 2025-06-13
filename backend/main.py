@@ -73,8 +73,8 @@ async def read_item(item_id: int, q: Union[str, None] = None):
 class UserCreate(BaseModel):
     email: str
     password: str
-    name: str  # 追加
-    age: int   # 追加
+    name: str # これが必須だとOPTIONSで問題になるかも
+    age: int  # これも必須だとOPTIONSで問題になるかも
 
 class UserLogin(BaseModel):
     email: str
