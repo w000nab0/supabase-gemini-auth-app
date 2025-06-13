@@ -8,6 +8,7 @@ from supabase import create_client, Client # Supabaseクライアントをイン
 from pydantic import BaseModel
 import google.generativeai as genai
 
+
 # FastAPIのアプリケーションインスタンスを作成するよ
 # これがWebアプリの本体になるイメージね！
 app = FastAPI()
@@ -29,6 +30,11 @@ app.add_middleware(
     allow_methods=["*"], # 全てのHTTPメソッド（GET, POST, PUT, DELETEなど）を許可
     allow_headers=["*"], # 全てのHTTPヘッダーを許可
 )
+
+# ★★★ 一時的なデバッグ用: OPTIONSリクエストを明示的に処理するエンドポイント ★★★
+@app.options("/auth/signup")
+async def handle_options_signup():
+    return Response(status_code=status.HTTP_200_OK)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
@@ -73,8 +79,8 @@ async def read_item(item_id: int, q: Union[str, None] = None):
 class UserCreate(BaseModel):
     email: str
     password: str
-    name: str # これが必須だとOPTIONSで問題になるかも
-    age: int  # これも必須だとOPTIONSで問題になるかも
+    name: str  # 追加
+    age: int   # 追加
 
 class UserLogin(BaseModel):
     email: str
