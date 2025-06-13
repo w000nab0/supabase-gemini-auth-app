@@ -31,8 +31,9 @@ app.add_middleware(
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_JWT_SECRET: str = os.environ.get("SUPABASE_JWT_SECRET")
 
-if not SUPABASE_URL or not SUPABASE_KEY or not SUPABASE_SERVICE_ROLE_KEY:
+if not SUPABASE_URL or not SUPABASE_KEY or not SUPABASE_SERVICE_ROLE_KEY or not SUPABASE_JWT_SECRET:
     raise ValueError("Supabase URL, Anon Key, and Service Role Key must be set as environment variables")
 
 
