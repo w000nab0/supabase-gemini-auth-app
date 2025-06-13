@@ -31,7 +31,7 @@ if not GEMINI_API_KEY:
 
 # Gemini APIクライアントを設定するよ
 genai.configure(api_key=GEMINI_API_KEY)
-gemini_model = genai.GenerativeModel('gemini-2.0-flash-lite') if GEMINI_API_KEY else None
+gemini_model = None
 
 
 # FastAPIのアプリケーションインスタンスを作成するよ
@@ -211,3 +211,39 @@ async def get_current_user_id(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     
+
+# Geminiに送るメッセージのデータモデルを定義するよ
+class GeminiPrompt(BaseModel):
+    prompt: str
+
+# Gemini APIクライアントを設定するよ
+genai.configure(api_key=GEMINI_API_KEY)
+# モデルが存在するか確認してから初期化するよ
+try:
+    gemini_model = genai.GenerativeModel('gemini-2.0-flash-lite')
+except Exception as e:
+    print(f"Error initializing Gemini model: {e}")
+    #gemini_model = None # 初期化に失敗したらNoneにする
+
+
+# Geminiにテキストを生成させるエンドポイントを追加するよ
+@app.post("/generate_text")
+async def generate_text(prompt_data: GeminiPrompt, current_user_id: str = Depends(get_current_user_id)):
+    if not gemini_model:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Gemini model not initialized.")
+    try:
+        # Geminiモデルにプロンプトを送信して応答を生成するよ
+        response = gemini_model.generate_content(prompt_data.prompt)
+        
+        # 応答からテキストを抽出するよ
+        # response.text が存在しない場合や空の場合に備えてNoneチェックを入れる
+        generated_text = response.text if hasattr(response, 'text') else ""
+
+        # ユーザーIDと生成されたテキストをログに出力（デバッグ用）
+        print(f"User {current_user_id} generated text: {generated_text[:50]}...") # 最初の50文字だけ表示
+
+        return {"generated_text": generated_text}
+    except Exception as e:
+        # Gemini APIからのエラーをキャッチして返すよ
+        print(f"Error calling Gemini API: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to generate text from Gemini: {e}")
