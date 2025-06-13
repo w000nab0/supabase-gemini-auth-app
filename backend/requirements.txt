@@ -1,0 +1,4 @@
+fastapi==0.111.0 # Web APIを作るフレームワーク
+uvicorn==0.30.1 # FastAPIを動かすためのサーバー
+supabase
+google-generativeai==0.7.0

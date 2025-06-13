@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+*.env # 環境変数ファイルは除外（APIキーなどが入っているため）
+.pytest_cache/
+.mypy_cache/
+
+# Docker (ローカル開発用なのでGitHubにプッシュしない)
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# Frontend (もしnode_modulesがあれば)
+node_modules/
+.next/ # Next.jsの場合
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db

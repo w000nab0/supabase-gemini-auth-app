@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>AIチャットアプリ</h1>
+    </header>
+    <main>
+        <section id="auth-section">
+            <h2>ユーザー認証</h2>
+            <div id="auth-forms">
+                <form id="signup-form">
+                    <h3>新規登録</h3>
+                    <input type="email" id="signup-email" placeholder="メールアドレス" required>
+                    <input type="password" id="signup-password" placeholder="パスワード" required>
+                    <input type="text" id="signup-name" placeholder="名前" required>
+                    <input type="number" id="signup-age" placeholder="年齢" required>
+                    <button type="submit">登録</button>
+                </form>
+                <form id="login-form">
+                    <h3>ログイン</h3>
+                    <input type="email" id="login-email" placeholder="メールアドレス" required>
+                    <input type="password" id="login-password" placeholder="パスワード" required>
+                    <button type="submit">ログイン</button>
+                </form>
+            </div>
+            <p id="auth-message" class="message"></p>
+            <button id="logout-button" style="display: none;">ログアウト</button>
+        </section>
+
+        <section id="chat-section" style="display: none;">
+            <h2>AIチャット</h2>
+            <div id="chat-output"></div>
+            <form id="chat-form">
+                <input type="text" id="chat-input" placeholder="質問を入力してください..." required>
+                <button type="submit">送信</button>
+            </form>
+            <p id="chat-message" class="message"></p>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
