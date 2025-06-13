@@ -14,7 +14,7 @@ const chatInput = document.getElementById('chat-input');
 
 // APIのベースURLを設定するよ
 // バックエンドがDockerコンテナ内で動いているから、localhost:8000 を使うよ
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://supabase-gemini-auth-app.onrender.com';
 
 // ユーザーのセッション（アクセストークンなど）を保存する変数
 let accessToken = localStorage.getItem('supabase_access_token'); // ★★★ 修正箇所1 ★★★
