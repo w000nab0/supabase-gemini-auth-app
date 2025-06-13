@@ -7,6 +7,7 @@ import os # 環境変数を読み込むために必要
 from supabase import create_client, Client # Supabaseクライアントをインポート
 from pydantic import BaseModel
 import google.generativeai as genai
+from fastapi.responses import Response
 
 
 # FastAPIのアプリケーションインスタンスを作成するよ
@@ -31,10 +32,7 @@ app.add_middleware(
     allow_headers=["*"], # 全てのHTTPヘッダーを許可
 )
 
-# ★★★ 一時的なデバッグ用: OPTIONSリクエストを明示的に処理するエンドポイント ★★★
-@app.options("/auth/signup")
-async def handle_options_signup():
-    return Response(status_code=status.HTTP_200_OK)
+
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
@@ -180,8 +178,7 @@ async def get_current_user_id(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # ヘッダーは "Bearer <token>" の形式なので、"Bearer " を削除してトークンのみを取得
-    token = authorization.replace("Bearer ", "")
+  
 
     try:
         # Supabaseクライアントを使ってJWTを検証する
@@ -229,19 +226,4 @@ async def generate_text(
         print(f"An unexpected error occurred during text generation: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-# ↑↑↑ ここまで追加 ↓↑↑
 
-
-
-@app.post("/generate_text")
-async def generate_text(request_body: GenerateTextRequest):
-    try:
-        # Geminiモデルにプロンプトを渡してテキストを生成してもらうよ
-        # generate_contentメソッドは非同期ではないので、そのまま呼び出して大丈夫
-        response = gemini_model.generate_content(request_body.prompt)
-
-        # 生成されたテキストを返すよ
-        return {"generated_text": response.text}
-    except Exception as e:
-        # Gemini APIからのエラーやその他の例外をキャッチしてHTTPExceptionとして返すよ
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
