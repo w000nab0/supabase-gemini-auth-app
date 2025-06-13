@@ -1,4 +1,7 @@
 fastapi==0.111.0 # Web APIを作るフレームワーク
 uvicorn[standard]==0.29.0 # 最新の安定バージョン
-supabase
-google-generativeai==0.7.0
+supabase==2.5.0
+google-generativeai==0.6.0
+python-jose[cryptography]==3.3.0 # JWT認証用
+passlib[bcrypt]==1.7.4 # パスワードハッシュ用
+python-dotenv==1.0.0
