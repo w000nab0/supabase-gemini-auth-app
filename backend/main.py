@@ -54,13 +54,16 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins, # 許可するオリジンを指定
     allow_credentials=True, # クッキーや認証情報（Authorizationヘッダーなど）を許可
-    allow_methods=["*"], # 全てのHTTPメソッド（GET, POST, PUT, DELETEなど）を許可
-    allow_headers=["*"], # 全てのHTTPヘッダーを許可
+    allow_methods=["GET", "POST", "OPTIONS"], # ★必要なメソッドのみに絞る
+    allow_headers=["Content-Type", "Authorization"], # ★必要なヘッダーのみに絞る
+    # allow_methods=["*"], # ワイルドカードを一時的に解除
+    # allow_headers=["*"], # ワイルドカードを一時的に解除
 )
 
 print("DEBUG: After adding CORS middleware") # ★★★ 追加 ★★★
 
 # ★★★ ここにDEBUG用のエンドポイントを追加 ★★★
+"""
 @app.options("/{path:path}") # 全てのOPTIONSリクエストを捕捉
 async def debug_options_handler(path: str):
     """
@@ -79,7 +82,8 @@ async def debug_options_handler(path: str):
     response.headers["Access-Control-Max-Age"] = "86400" # プリフライト結果をキャッシュする時間
 
     return response
-
+"""
+    
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
 
 
@@ -207,52 +211,3 @@ async def get_current_user_id(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-  
-
-    try:
-        # Supabaseクライアントを使ってJWTを検証する
-        # このメソッドはトークンが有効であればユーザーオブジェクトを返す
-        user_response = supabase.auth.get_user(token)
-        
-        if user_response and user_response.user:
-            return user_response.user.id
-        else:
-            # トークンが無効またはユーザーが見つからない場合
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-    except Exception as e:
-        import traceback # 追加
-        traceback.print_exc() # 追加
-        print(f"Error validating token: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Could not validate credentials: {e}",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-
-class GenerateTextRequest(BaseModel):
-    prompt: str # ユーザーからの質問や指示が入るよ
-# 保護されたGemini APIエンドポイント
-@app.post("/generate_text")
-async def generate_text(
-    request_body: GenerateTextRequest,
-    current_user_id: str = Depends(get_current_user_id) # ★ 認証依存性を追加！
-):
-    """
-    ログインしているユーザーのみがアクセスできるGeminiテキスト生成エンドポイント。
-    """
-    print(f"User {current_user_id} is requesting text generation.") # どのユーザーがリクエストしているかログに出力
-    try:
-        response = gemini_model.generate_content(request_body.prompt)
-        return {"generated_text": response.text}
-    except Exception as e:
-        import traceback # 追加
-        traceback.print_exc() # 追加
-        print(f"An unexpected error occurred during text generation: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-
-
