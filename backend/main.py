@@ -10,6 +10,30 @@ import google.generativeai as genai
 from fastapi.responses import Response
 
 
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_JWT_SECRET: str = os.environ.get("SUPABASE_JWT_SECRET")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY or not SUPABASE_SERVICE_ROLE_KEY or not SUPABASE_JWT_SECRET:
+    print("WARNING: One or more Supabase environment variables are missing!")
+
+
+
+# Supabaseクライアントを初期化するよ
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
+supabase_admin: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY else None
+
+
+if not GEMINI_API_KEY:
+    print("WARNING: Gemini API Key is missing!")
+
+# Gemini APIクライアントを設定するよ
+genai.configure(api_key=GEMINI_API_KEY)
+gemini_model = genai.GenerativeModel('gemini-2.0-flash-lite') if GEMINI_API_KEY else None
+
+
 # FastAPIのアプリケーションインスタンスを作成するよ
 # これがWebアプリの本体になるイメージね！
 app = FastAPI()
@@ -33,32 +57,6 @@ app.add_middleware(
 )
 
 
-
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-SUPABASE_JWT_SECRET: str = os.environ.get("SUPABASE_JWT_SECRET")
-
-if not SUPABASE_URL or not SUPABASE_KEY or not SUPABASE_SERVICE_ROLE_KEY or not SUPABASE_JWT_SECRET:
-    raise ValueError("Supabase URL, Anon Key, and Service Role Key must be set as environment variables")
-
-
-# Supabaseクライアントを初期化するよ
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-# サービスロールキーを使ったSupabaseクライアントを初期化するよ
-supabase_admin: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-
-if not GEMINI_API_KEY:
-    raise ValueError("Gemini API Key must be set as an environment variable")
-
-# Gemini APIクライアントを設定するよ
-genai.configure(api_key=GEMINI_API_KEY)
-
-# Geminiモデルを初期化するよ
-# 使用するモデルは'gemini-pro'が一般的だよ
-gemini_model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
 # ルートURL（"/"）にGETリクエストが来たときに実行される関数を定義するよ
