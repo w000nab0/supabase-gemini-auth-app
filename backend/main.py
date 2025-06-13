@@ -59,6 +59,15 @@ app.add_middleware(
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
+
+
+# ★★★ 明示的にHEADメソッドをハンドリングするエンドポイントを追加 ★★★
+# これは通常不要だが、Renderのヘルスチェック問題に対応するため
+@app.head("/")
+async def head_root():
+    # HEADリクエストはボディを返さないので、ステータスコード200でOK
+    return Response(status_code=status.HTTP_200_OK)
+
 # ルートURL（"/"）にGETリクエストが来たときに実行される関数を定義するよ
 @app.get("/")
 async def read_root():
