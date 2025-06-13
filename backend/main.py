@@ -62,26 +62,6 @@ app.add_middleware(
 
 print("DEBUG: After adding CORS middleware") # ★★★ 追加 ★★★
 
-# ★★★ ここにDEBUG用のエンドポイントを追加 ★★★
-
-#@app.options("/{path:path}") # 全てのOPTIONSリクエストを捕捉
-#async def debug_options_handler(path: str):
-    #"""
-    #CORSプリフライトリクエストがFastAPIによって捕捉され、
-    #このハンドラーに到達するかどうかを確認するためのデバッグ用エンドポイント。
-    #"""
-    #print(f"DEBUG: OPTIONS request received for path: /{path}")
-    # HTTPX-style header access
-    #print(f"DEBUG: Request headers: {dict(app.request.headers)}") # FastAPI 0.100.0以降は request.headers
-    
-    # ここでCORSヘッダーを手動で返してみる（CORSミドルウェアをテストするため）
-    #response = Response(status_code=status.HTTP_200_OK)
-    #response.headers["Access-Control-Allow-Origin"] = "*" # originsリストから選択することも可能
-    #response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-    #response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    #response.headers["Access-Control-Max-Age"] = "86400" # プリフライト結果をキャッシュする時間
-
-    #return response
 
     
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login") 
